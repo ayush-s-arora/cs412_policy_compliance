@@ -3,6 +3,7 @@
 import pandas as pd
 import re
 from pydantic import BaseModel, Field
+import random # Temporary for simulating functionality
 
 class MatchResult(BaseModel): # Model should figure out what to put in these fields based on the descriptions
     website: str = Field(description="The website name.")
@@ -19,7 +20,7 @@ def get_prompt(website, laws, policy):
     )
 
 # TODO: parllelize and make rate-limit safe
-# def call_llm()
+# def call_llm(prompt)
 #   if not frameworks:
 #       return None
 # client = genai.Client()
@@ -48,13 +49,14 @@ results = []
 for _, row in data.head(5).iterrows():
     print(f"Rating {row['Website']}...")
     print(f"\n\n====Prompt====\n\n {get_prompt(row['Website'], row['claimed_frameworks'], row['full_policy'])}")
-    # rating = rate_compliance(row['Website'], row['full_policy'], row['claimed_frameworks'])
-    rating = "fully compliant"
-    results.append({
-        'website': row['Website'],
-        'claimed': row['claimed_frameworks'],
-        'ratings': rating
-    })
+    # rating = call_llm(prompt)
+    for framework in row['claimed_frameworks']: # Simulate LLM response
+        rating = random.choice(["fully compliant", "mostly compliant", "marginally compliant", "not compliant"])
+        results.append({
+            'website': row['Website'],
+            'claimed': framework,
+            'ratings': rating
+        })
 
 print("\nSUMMARY")
 for res in results:
